@@ -1,0 +1,85 @@
+---
+- name: Install prerequisite packages
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - git
+      - python3-pip
+    state: present
+    update_cache: yes
+  tags: [deploy, install, clone]
+
+- name: Add Docker GPG key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  tags: [deploy, install, clone]
+
+- name: Add Docker repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+  tags: [deploy, install, clone]
+
+- name: Install Docker Engine and Docker Compose
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+    state: present
+    update_cache: yes
+  tags: [deploy, install, clone]
+
+- name: Ensure project directory exists
+  ansible.builtin.file:
+    path: "{{ project_dir }}"
+    state: directory
+    mode: '0755'
+  tags: [deploy, clone]
+
+- name: Remove existing DevOps directory to avoid conflicts
+  ansible.builtin.file:
+    path: "{{ project_dir }}/DevOps"
+    state: absent
+  tags: [deploy, clone]
+
+- name: Clone DevOps repo
+  ansible.builtin.git:
+    repo: "{{ devops_repo }}"
+    dest: "{{ project_dir }}/DevOps"
+    version: main
+    update: yes
+  tags: [deploy, clone]
+
+- name: Clone frontend repo
+  ansible.builtin.git:
+    repo: "{{ frontend_repo }}"
+    dest: "{{ project_dir }}/DevOps/frontend"
+    version: main
+    update: yes
+  tags: [deploy, clone]
+
+- name: Clone backend repo
+  ansible.builtin.git:
+    repo: "{{ backend_repo }}"
+    dest: "{{ project_dir }}/DevOps/backend"
+    version: main
+    update: yes
+  tags: [deploy, clone]
+
+- name: Start services with Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ project_dir }}/DevOps"
+    state: present
+  tags: [deploy, start]
+
+- name: Stop services with Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ project_dir }}/DevOps"
+    state: absent
+  tags: [stop]

@@ -1,0 +1,5 @@
+frontend_repo: "https://github.com/momchik5/frontend.git"
+backend_repo: "https://github.com/momchik5/backend.git"
+devops_repo: "https://github.com/momchik5/DevOps.git"
+
+project_dir: "/home/{{ ansible_user }}/devops_project"

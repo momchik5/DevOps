@@ -1,0 +1,6 @@
+---
+- name: Deploy microservices to remote node
+  hosts: app_servers
+  become: yes  
+  roles:
+    - role: deploy_app

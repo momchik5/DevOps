@@ -1,0 +1,2 @@
+[app_servers]
+host01 ansible_host=192.168.1.159 ansible_user=kanekiken
