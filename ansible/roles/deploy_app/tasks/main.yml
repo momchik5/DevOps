@@ -76,12 +76,12 @@
   community.docker.docker_compose_v2:
     project_src: "{{ project_dir }}/DevOps"
     state: present
+    build: true          
+    recreate: always      
   tags: [deploy, start]
 
 - name: Stop services with Docker Compose
   community.docker.docker_compose_v2:
     project_src: "{{ project_dir }}/DevOps"
     state: absent
-    build: true          
-    recreate: always     
-  tags: [deploy, start]
+  tags: [deploy, stop]
