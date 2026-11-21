@@ -82,4 +82,6 @@
   community.docker.docker_compose_v2:
     project_src: "{{ project_dir }}/DevOps"
     state: absent
-  tags: [stop]
+    build: true          
+    recreate: always     
+  tags: [deploy, start]
