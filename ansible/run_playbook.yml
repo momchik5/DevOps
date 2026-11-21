@@ -2,5 +2,7 @@
 - name: Deploy microservices to remote node
   hosts: app_servers
   become: yes  
+  vars_files:
+    - /group_vars/all.yml
   roles:
     - role: deploy_app
