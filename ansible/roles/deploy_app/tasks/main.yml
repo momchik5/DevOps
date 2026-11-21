@@ -72,12 +72,29 @@
     update: yes
   tags: [deploy, clone]
 
+- name: Build backend image
+  community.docker.docker_image:
+    name: backend:2.0
+    source: build
+    build:
+      path: "{{ project_dir }}/DevOps/backend"
+    force_source: true     
+  tags: [deploy, start]
+
+- name: Build frontend image
+  community.docker.docker_image:
+    name: frontend:2.0
+    source: build
+    build:
+      path: "{{ project_dir }}/DevOps/frontend"
+    force_source: true     
+  tags: [deploy, start]
+
 - name: Start services with Docker Compose
   community.docker.docker_compose_v2:
     project_src: "{{ project_dir }}/DevOps"
     state: present
-    build: true          
-    recreate: always      
+    recreate: always       # <-- Пересоздаем контейнеры
   tags: [deploy, start]
 
 - name: Stop services with Docker Compose
